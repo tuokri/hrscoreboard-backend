@@ -17,13 +17,15 @@ namespace xxtea
 {
 
 inline static std::vector<int32_t>
-decrypt(const std::vector<int32_t>& v, int32_t n, const std::array<int32_t, KEY_LEN>& key)
+decrypt(const std::vector<int32_t>& v, const std::array<int32_t, KEY_LEN>& key)
 {
-    int32_t y;
-    int32_t z;
-    int32_t sum;
-    int32_t p;
-    int32_t e;
+    int32_t y = 0;
+    int32_t z = 0;
+    int32_t sum = 0;
+    int32_t p = 0;
+    int32_t e = 0;
+
+    auto n = static_cast<int32_t>(v.size());
     int32_t rounds = 6 + 52 / n;
     std::vector<int32_t> ret{v};
 
