@@ -12,10 +12,7 @@ find_package(
     REQUIRED
 )
 
-add_library(
-    xxtea STATIC
-    xxtea.cpp
-)
+add_subdirectory(xxtea)
 
 add_executable(
     hrscoreboard_packethandler

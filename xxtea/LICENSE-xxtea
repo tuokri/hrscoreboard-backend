@@ -1,11 +1,5 @@
 BSD 2-Clause License
 
-xxtea.cpp
-xxtea.h
-
-XXTEA adapted for 32-bit signed integers for Unreal Engine 3.
-Based on https://github.com/ifduyue/xxtea by Yue Du.
-
 Copyright (c) 2022, tuokri / fluudah
 Copyright (c) 2014-2020, Yue Du
 All rights reserved.
