@@ -28,6 +28,8 @@
  *
  */
 
+#include <stdexcept>
+
 #include "xxtea.h"
 
 namespace
@@ -46,14 +48,14 @@ mx(int32_t z, int32_t y, int32_t sum, int32_t e, int32_t p, const std::array<int
 namespace xxtea
 {
 
-inline static std::vector<int32_t>
+std::vector<int32_t>
 decrypt(const std::vector<int32_t>& v, const std::array<int32_t, KEY_LEN>& key)
 {
-    int32_t y = 0;
-    int32_t z = 0;
-    int32_t sum = 0;
-    int32_t p = 0;
-    int32_t e = 0;
+    int32_t y;
+    int32_t z;
+    int32_t sum;
+    int32_t p;
+    int32_t e;
 
     auto n = static_cast<int32_t>(v.size());
     int32_t rounds = 6 + 52 / n;
@@ -68,7 +70,7 @@ decrypt(const std::vector<int32_t>& v, const std::array<int32_t, KEY_LEN>& key)
         {
             e = (sum >> 2) & 3;
 
-            for (p = n - 1; p > 0; p--)
+            for (p = n - 1; p > 0; --p)
             {
                 z = ret[p - 1];
                 y = ret[p] -= mx(z, y, sum, e, p, key);
@@ -79,8 +81,97 @@ decrypt(const std::vector<int32_t>& v, const std::array<int32_t, KEY_LEN>& key)
             sum -= DELTA;
         }
     }
+    else
+    {
+        throw std::invalid_argument("v size must be > 1, is " + std::to_string(n));
+    }
 
     return ret;
+}
+
+std::vector<int32_t> bytes2ints(const std::vector<uint8_t>& bytes, bool padding)
+{
+    int32_t i;
+    int32_t pad;
+    const auto in_size = static_cast<int32_t>(bytes.size());
+    std::vector<int32_t> out;
+
+    // (i & 3) << 3 -> [0, 8, 16, 24]
+    for (i = 0; i < in_size; i++)
+    {
+        out[i >> 2] |= bytes[i] << ((i & 3) << 3);
+    }
+
+    if (padding)
+    {
+        // PKCS#7 padding.
+        pad = 4 - (in_size & 3);
+        // Make sure length of out >= 2.
+        pad = (in_size < 4) ? pad + 4 : pad;
+        for (i = in_size; i < in_size + pad; ++i)
+        {
+            out[i >> 2] |= (pad << ((i & 3) << 3));
+        }
+    }
+
+    // Divided by 4, and then rounded up (ceil) to an integer.
+    // Which is the number of how many longs we've got.
+    // return ((i - 1) >> 2) + 1;
+    return out;
+}
+
+std::vector<uint8_t> ints2bytes(const std::vector<int32_t>& ints, bool padding)
+{
+    int32_t i;
+    int32_t pad;
+    int32_t out_size;
+    const auto in_size = static_cast<int32_t>(ints.size());
+    std::vector<uint8_t> out;
+
+    for (i = 0; i < in_size; i++)
+    {
+        out[4 * i] = ints[i] & 0xFF;
+        out[4 * i + 1] = (ints[i] >> 8) & 0xFF;
+        out[4 * i + 2] = (ints[i] >> 16) & 0xFF;
+        out[4 * i + 3] = (ints[i] >> 24) & 0xFF;
+    }
+
+    out_size = in_size * 4;
+
+    // Remove PKCS#7 padding.
+    if (padding)
+    {
+        pad = out[out_size - 1];
+        out_size -= pad;
+
+        if (pad < 1 || pad > 8)
+        {
+            /* invalid padding */
+            // return -1;
+            throw std::invalid_argument("invalid padding: " + std::to_string(-1));
+        }
+
+        if (out_size < 0)
+        {
+            // return -2;
+            throw std::invalid_argument("invalid padding: " + std::to_string(-2));
+        }
+
+        for (i = out_size; i < in_size * 4; i++)
+        {
+            if (out[i] != pad)
+            {
+                // return -3;
+                throw std::invalid_argument("invalid padding: " + std::to_string(-3));
+            }
+        }
+    }
+
+    // s[outlen] = '\0';
+
+    /* How many bytes we've got */
+    // return outlen;
+    return out;
 }
 
 }

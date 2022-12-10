@@ -38,7 +38,8 @@
 
 namespace xxtea
 {
-static constexpr int32_t KEY_LEN = 4;
+
+inline static constexpr int32_t KEY_LEN = 4;
 
 /**
  * XXTEA decryption specialized for signed 32-bit integers.
@@ -50,12 +51,13 @@ static constexpr int32_t KEY_LEN = 4;
  * @param key 16-byte XXTEA key
  * @return @v decrypted and padding removed
  */
-inline static std::vector<int32_t>
+std::vector<int32_t>
 decrypt(const std::vector<int32_t>& v, const std::array<int32_t, KEY_LEN>& key);
 
-//inline static int bytes2longs(const char* in, int inlen, unsigned int* out, int padding);
-//
-//inline static int longs2bytes(unsigned int* in, int inlen, char* out, int padding);
+std::vector<int32_t> bytes2ints(const std::vector<uint8_t>& bytes, bool padding);
+
+std::vector<uint8_t> ints2bytes(const std::vector<int32_t>& ints, bool padding);
+
 }
 
 #endif // HRSCOREBOARD_BACKEND_XXTEA_H

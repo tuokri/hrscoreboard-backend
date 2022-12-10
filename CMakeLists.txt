@@ -3,7 +3,7 @@ project(hrscoreboard_backend)
 
 set(CMAKE_CXX_STANDARD 23)
 
-add_compile_options(-Wall -Werror -Wpedantic)
+add_compile_options(-Wall -Werror -pedantic -Wpedantic -Wextra)
 
 find_package(
     Boost 1.80
