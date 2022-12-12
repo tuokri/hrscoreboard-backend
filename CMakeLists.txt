@@ -10,7 +10,6 @@ set(Boost_USE_DEBUG_LIBS $<$<CONFIG:Debug>:ON,OFF>)
 add_compile_definitions(
     $<$<CONFIG:Debug>:BOOST_STACKTRACE_LINK>
     $<$<CONFIG:Debug>:BOOST_STACKTRACE_DYN_LINK>
-    # $<$<CONFIG:Debug>:BOOST_STACKTRACE_USE_BACKTRACE>
     $<$<CONFIG:Debug>:BOOST_STACKTRACE_USE_ADDR2LINE>
     $<$<CONFIG:Release>:BOOST_STACKTRACE_USE_NOOP>
 )
@@ -20,14 +19,13 @@ find_package(
     COMPONENTS
     system
     coroutine
-    # stacktrace_basic
-    # stacktrace_backtrace
     stacktrace_addr2line
     stacktrace_noop
     REQUIRED
 )
 
 add_subdirectory(xxtea)
+add_subdirectory(dh)
 
 add_executable(
     hrscoreboard_packethandler
@@ -39,8 +37,6 @@ target_link_libraries(
     xxtea
     Boost::system
     Boost::coroutine
-    # debug Boost::stacktrace_basic
-    # debug Boost::stacktrace_backtrace
     debug Boost::stacktrace_addr2line
     optimized Boost::stacktrace_noop
     debug dl

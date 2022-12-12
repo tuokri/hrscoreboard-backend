@@ -22,9 +22,9 @@ boost::asio::awaitable<void> echo_once(boost::asio::ip::tcp::socket& socket)
 
     std::cout << "reading header" << std::endl;
     n = co_await socket.async_read_some(boost::asio::buffer(header_data, 3), boost::asio::use_awaitable);
-    std::cout << "got " << n << " bytes" << std::endl;
+    std::cout << "got " << std::dec << n << " bytes" << std::endl;
     const auto packet_size = header_data.at(0);
-    std::cout << "size             : " << +packet_size << " bytes" << std::endl;
+    std::cout << "size             : " << std::dec << +packet_size << " bytes" << std::endl;
     std::cout << "protocol version : " << +header_data.at(1) << std::endl;
     std::cout << "packet ID        : " << +header_data.at(2) << std::endl;
 
@@ -56,8 +56,8 @@ boost::asio::awaitable<void> echo_once(boost::asio::ip::tcp::socket& socket)
 
     std::vector<uint8_t> echo_data(3 + n);
     echo_data.insert(echo_data.begin(), header_data.cbegin(), header_data.cend());
-    echo_data.insert(echo_data.begin() + 3, echo_data.cbegin(), echo_data.cend());
-    co_await async_write(socket, boost::asio::buffer(echo_data), boost::asio::use_awaitable);
+    echo_data.insert(echo_data.begin() + 3, plain_bytes.cbegin(), plain_bytes.cend());
+    co_await socket.async_write_some(boost::asio::buffer(echo_data, 3 + n), boost::asio::use_awaitable);
 }
 
 boost::asio::awaitable<void> echo(boost::asio::ip::tcp::socket socket)
