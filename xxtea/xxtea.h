@@ -39,24 +39,21 @@
 namespace xxtea
 {
 
-inline static constexpr int32_t KEY_LEN = 4;
+inline static constexpr uint32_t KEY_LEN = 4;
 
 /**
- * XXTEA decryption specialized for signed 32-bit integers.
- * Common XXTEA implementations operate on 32-bit unsigned integers,
- * whereas this version operates on signed integers due to Unreal Engine 3 /
- * UnrealScript integers being exclusively limited to signed type.
+ * XXTEA decryption.
  *
  * @param v input ciphertext with PKCS#7 padding
  * @param key 16-byte XXTEA key
  * @return @v decrypted and padding removed
  */
-std::vector<int32_t>
-decrypt(const std::vector<int32_t>& v, const std::array<int32_t, KEY_LEN>& key);
+std::vector<uint32_t>
+decrypt(const std::vector<uint32_t>& v, const std::array<uint32_t, KEY_LEN>& key);
 
-std::vector<int32_t> bytes2ints(const std::vector<uint8_t>& bytes, bool padding);
+std::vector<uint32_t> bytes2ints(const std::vector<uint8_t>& bytes, bool padding);
 
-std::vector<uint8_t> ints2bytes(const std::vector<int32_t>& ints, bool padding);
+std::vector<uint8_t> ints2bytes(const std::vector<uint32_t>& ints, bool padding);
 
 }
 

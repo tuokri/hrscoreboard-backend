@@ -13,7 +13,7 @@ namespace hr
 
 inline constexpr uint16_t PORT = 54231;
 
-inline constexpr std::array<int32_t, xxtea::KEY_LEN> XXTEA_KEY = {0x2b959f13, 0x330de56a, 0x583e0f76, 0x6b8f3054};
+inline constexpr std::array<uint32_t, xxtea::KEY_LEN> XXTEA_KEY = {0x2b959f13, 0x330de56a, 0x583e0f76, 0x6b8f3054};
 
 }
 
