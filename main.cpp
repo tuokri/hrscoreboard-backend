@@ -11,8 +11,9 @@
 #include <boost/asio/write.hpp>
 #include <boost/stacktrace.hpp>
 
-#include "xxtea.h"
+#include "dh.h"
 #include "common.h"
+#include "xxtea.h"
 
 boost::asio::awaitable<void> echo_once(boost::asio::ip::tcp::socket& socket)
 {
@@ -125,6 +126,16 @@ int main()
             std::cout << std::hex << p << std::endl;
         }
         std::cout << "\n";
+
+        const auto shared = dh::gen_shared_secret({0x94755ABD, 0x99170141, 0xF7CA9CCE, 0x0B3E5009},
+                                                  {0xA67E1350, 0x15607BFA, 0xF8ADE187, 0xCC3113AC});
+        std::cout << "shared:\n";
+        for (const auto& s: shared)
+        {
+            std::cout << std::hex << s << std::endl;
+        }
+        std::cout << "\n";
+
 
         boost::asio::io_context io_context;
 

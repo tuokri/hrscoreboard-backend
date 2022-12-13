@@ -35,6 +35,7 @@ add_executable(
 target_link_libraries(
     hrscoreboard_packethandler PRIVATE
     xxtea
+    dh
     Boost::system
     Boost::coroutine
     debug Boost::stacktrace_addr2line
